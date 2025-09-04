@@ -1,0 +1,123 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="card shadow-sm p-4">
+    <h4>Question {{ question_number }} of {{ total_questions }}</h4>
+    <p class="lead">{{ question.text }}</p>
+    <div class="alert alert-warning text-center" id="timer" style="font-size: 20px;"></div>
+    <form method="post" id="quiz-form">
+        {% csrf_token %}
+        {% for option in options %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="option" id="option {{ option.id }}" value="{{ option.id }}">
+                <label class="form-check-label" for="option {{ option.id }}">
+                    {{ option.text }}
+                </label>
+            </div>
+        {% endfor %}
+        <hr>
+        <button type="submit" class="btn btn-primary mt-3">Submit Answer</button>
+    </form>
+
+    <div id="fullscreen-warning" class="alert alert-danger" style="display: none;">
+        Please do not exit fullscreen. You have <span id="remaining-attempts">3</span> warnings left.
+    </div>
+    
+    {% comment %} <div class="mt-3">
+        <p><strong>Time Left:</strong> <span id="timer">30</span> seconds</p>
+    </div> {% endcomment %}
+</div>
+
+<script>
+    let timeLeft = 30;
+    const timer = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        timer.innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            document.querySelector('form').submit();  // auto-submit
+        }
+    }, 1000);
+
+    function handleFullscreenChange() {
+        if (!document.fullscreenElement) {
+            exitCount++;
+            document.getElementById('fullscreen-warning').style.display = 'block';
+            document.getElementById('remaining-attempts').innerText = MAX_EXITS - exitCount;
+    
+            if (exitCount >= MAX_EXITS) {
+                alert("Too many fullscreen exits. Submitting your quiz.");
+                document.getElementById('quiz-form').submit();
+            }
+        }
+    }
+    
+</script>
+
+<script>
+    let totalTime = 30;  // seconds per question or entire quiz (adjust as needed)
+    let timerElement = document.getElementById("timer");
+
+    function updateTimer() {
+        let minutes = Math.floor(totalTime / 60);
+        let seconds = totalTime % 60;
+        timerElement.innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (totalTime <= 0) {
+            clearInterval(timerInterval);
+            alert("Time's up! Submitting your quiz...");
+            document.getElementById("quiz-form").submit();
+        }
+        totalTime--;
+    }
+
+    let timerInterval = setInterval(updateTimer, 1000);
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Trigger fullscreen when page loads
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        }
+    });
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    document.addEventListener('keydown', function (e) {
+        // Disable Ctrl+C, Ctrl+V, Ctrl+U, Ctrl+Shift+I (DevTools)
+        if (
+            (e.ctrlKey && ['c', 'v', 'u'].includes(e.key.toLowerCase())) ||
+            (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') ||
+            (e.key === 'F12')
+        ) {
+            e.preventDefault();
+        }
+    });
+
+    </script>
+    
+    <script>
+        let exitCount = 0;
+        const MAX_EXITS = 3;
+        
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement) {
+                exitCount++;
+                alert(`You exited fullscreen! (${exitCount}/${MAX_EXITS})`);
+        
+                if (exitCount >= MAX_EXITS) {
+                    alert("You have exited fullscreen too many times. Submitting your quiz now.");
+                    document.getElementById('quiz-form').submit(); // auto-submit
+                }
+            }
+        }
+        
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+    </script>
+        
+
+{% endblock %}

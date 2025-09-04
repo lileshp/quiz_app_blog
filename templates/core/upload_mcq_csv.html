@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Core</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Upload MCQ CSV</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+  <h3>Upload MCQ CSV</h3>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>CSV File:</label>
+      <input type="file" name="csv_file" accept=".csv" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success mt-2">Upload</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Quiz Categories</h2>
+<div class="row">
+  {% for category in categories %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm text-center">
+      <div class="card-body">
+        <h5 class="card-title">{{ category.name }}</h5>
+        <p class="card-text">{{ category.description|truncatewords:20 }}</p>
+        <a href="{% url 'category_quizzes' category.id %}" class="btn btn-outline-success">View Quizzes</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

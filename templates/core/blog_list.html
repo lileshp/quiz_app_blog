@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Latest Blogs</h2>
+<div class="row">
+  {% for blog in blogs %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      {% if blog.image %}
+      <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title text-center text-primary">{{ blog.title }}</h5>
+        <p>
+            {% for tag in blog.tags.all %}
+              <a href="{% url 'blogs_by_tag' tag.name %}" class="badge badge-info">{{ tag.name }}</a>
+            {% endfor %}
+          </p>
+        <p><strong>Author:</strong> {{ blog.author.username }}</p>
+        <p class="card-text">{{ blog.summary|truncatewords:20|safe }}</p>
+        <a href="{% url 'blog_detail' blog.id %}" class="btn btn-outline-primary">Read More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

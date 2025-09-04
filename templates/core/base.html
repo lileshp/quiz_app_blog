@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz App</title>
+    <!-- Bootstrap 4 CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        .breadcrumb {
+            background: #f8f9fa;
+            border-radius: 0.3rem;
+            padding: 0.75rem 1rem;
+        }
+    </style>
+    {% comment %} {% block extra_head %}{% endblock %} {% endcomment %}
+</head>
+<body>
+    <header>
+    
+    </header> 
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top custom-sticky-navbar nav_back">
+        {% if not user.is_staff %}
+            <a class="navbar-brand animate__animated animate__pulse animate__infinite" href="{% url 'home' %}">QuizApp</a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'admin_dashboard' %}">QuizApp</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated and not user.is_staff %}
+                    <li class="nav-item"><a class="nav-link text-light" href="{% url 'quiz_list' %}">Quizzes</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="{% url 'blog_list' %}">Blogs</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="{% url 'about' %}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="{% url 'course' %}">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link text-light" href="{% url 'contact' %}">Contact</a></li>
+                {% elif user.is_staff %}
+                    <li class="nav-item "><a class="nav-link" href="{% url 'admin_manage_quizzes' %}">Manage Quizzes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin_blogs' %}">Manage Blogs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'admin_manage_users' %}">Manage Users</a></li>
+                    {% comment %} <li class="nav-item"><a class="nav-link" href="{% url 'course' %}">Manage Courses</a></li> {% endcomment %}
+                {% else %}
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'quiz_list' %}">Quizzes</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'blog_list' %}">Blogs</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'about' %}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'course' %}">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'contact' %}">Contact</a></li>
+                {% endif %}
+            </ul>
+
+             <!-- 🔍 Search form -->
+            <form class="d-flex me-3" method="get" action="{% url 'search' %}">
+                <input id="search_button" class="form-control me-2" type="search" name="q" placeholder="Search quizzes, blogs...">
+                <button class="btn btn-info ml-2" id="search_btn" type="submit">Search</button>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" style="text-decoration:2px 2px 1px grey">Hello, {{ user.username|upper }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'my_attempts' %}">My Attempts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+      </nav>
+       
+      {% comment %} {% if messages %}
+    <div class="container mt-2">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        <button class="alert-close">&times;</button>
+        {{ message }}
+      </div>
+    {% endfor %}
+    </div>
+    {% endif %} {% endcomment %}
+    <!-- Page Content -->
+
+    <div class="container mt-4 main-content">
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        &copy; 2025 Quiz App. All rights reserved.
+    </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2 class="text-center">{{ blog.title }}</h2>
+<p>
+    {% for tag in blog.tags.all %}
+      <a href="{% url 'blogs_by_tag' tag.name %}" class="badge badge-info">{{ tag.name }}</a>
+    {% endfor %}
+  </p>
+<p class="text-muted">Published on {{ blog.created_at }}</p>
+<p><strong>Author:</strong> {{ blog.author.username }}</p>
+
+{% if blog.image %}
+<img src="{{ blog.image.url }}" class="img-fluid mb-3" alt="{{ blog.title }}">
+{% endif %}
+
+<div>{{ blog.content|safe }}</div>
+
+<div>
+    {% comment %} <button class="btn btn-outline-success" id="like-btn">👍 Like (<span id="like-count">{{ like_count }}</span>)</button>
+    <button id="dislike-btn" class="btn btn-outline-danger">👎 Dislike (<span id="dislike-count">{{ dislike_count }}</span>)</button> {% endcomment %}
+    <button class="btn btn-outline-success">👍 Like <span id="like-count"></span></button>
+    <button class="btn btn-outline-danger">👎 Dislike <span id="dislike-count"></span></button>
+
+</div>
+
+<hr/>
+<h4>Comments</h4>
+<hr>
+{% for comment in comments %}
+    <div class="mb-3 p-3 border rounded">
+        <strong>{{ comment.user.username }}</strong> 
+        <small class="text-muted">on {{ comment.created_at }}</small>
+        <p>{{ comment.content }}</p>
+    </div>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+  <h5>Leave a Comment</h5>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Post Comment</button>
+  </form>
+{% else %}
+  <p class="text-muted">Please <a href="{% url 'login' %}">login</a> to comment.</p>
+{% endif %}
+
+<hr>
+<h4 class="mt-5">More Blogs</h4>
+<div class="row">
+  {% for related in related_blogs %}
+  <div class="col-md-4 mb-3">
+    <div class="card h-100">
+      {% if related.image %}
+      <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.title }}">
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ related.title }}</h5>
+        <a href="{% url 'blog_detail' related.id %}" class="btn btn-sm btn-outline-primary">Read</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+    function handleReaction(type) {
+        fetch('/blog/5/react/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,  // Make sure CSRF is included
+            },
+            body: JSON.stringify({ is_like: true }),
+        })
+        .then(response => {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                return response.json();
+            } else {
+                throw new Error("Not JSON — possible redirect to login?");
+            }
+        })
+        .then(data => {
+            console.log("Reaction updated:", data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Please login to like/dislike.");
+        });
+    }
+
+    document.getElementById('like-btn').onclick = () => handleReaction('like');
+    document.getElementById('dislike-btn').onclick = () => handleReaction('dislike');
+</script>
+
+{% endblock %}

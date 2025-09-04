@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="jumbotron text-center bg-light shadow-sm home_banner">
+    <h1 class="display-4 animate__animated animate__fadeInDown">Welcome to the Quiz App</h1>
+    <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Test your knowledge by choosing a quiz category.</p>
+</div>
+
+<div class="row">
+    {% for category in categories %}
+        <div class="col-md-4 mb-4 animate__animated animate__rubberBand">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title animate__animated animate__flash animate__delay-1s">{{ category.name }}</h5>
+                    {% comment %} <span>Category ID: {{ category.id }}</span> {% endcomment %}
+                    <a href="{% url 'category_quizzes' category.id %}" class="btn btn-primary animate__animated animate__heartBeat animate__delay-2s">View Quizzes</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center">
+            <p>No categories available.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<hr class="my-5">
+
+<!-- Blogs Section -->
+<h2 class="mb-4">Latest Blogs</h2>
+<div class="row">
+    {% for blog in blogs %}
+        <div class="col-md-4 mb-4 crds_home">
+            <div class="card shadow-sm h-100">
+                {% if blog.image %}
+                    <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-center">{{ blog.title }}</h5>
+                    <p class="text-info mb-2">
+                        By {{ blog.author }} | {{ blog.created_at|date:"M d, Y" }}
+                    </p>
+                    <p class="card-text text-justify">{{ blog.content|truncatewords:20|safe }}</p>
+                    <a href="{% url 'blog_detail' blog.id %}" class="btn btn-outline-primary btn-sm">Read More</a>
+                </div>
+                {% if blog.tags.all %}
+                    <div class="card-footer bg-white border-0">
+                        {% for tag in blog.tags.all %}
+                            <span class="badge badge-secondary">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center">
+            <p>No blogs available.</p>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}

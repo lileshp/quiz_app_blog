@@ -1,0 +1,149 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<style>
+.hero {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: auto;
+}
+
+.section {
+    padding: 60px 20px;
+}
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.card {
+    width: 300px;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    background: white;
+}
+.card:hover {
+    transform: scale(1.03);
+}
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.card-body {
+    padding: 20px;
+}
+.card-body h5 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.card-body p {
+    font-size: 0.95rem;
+    color: #555;
+}
+</style>
+
+<!-- Hero Section -->
+<div class="hero">
+    <h1>Empowering Tech Learners Globally</h1>
+    <p>Welcome to your one-stop destination for top-notch tech content, quizzes, blogs, and courses across domains like AI, ML, DSA, Web Development, and more.</p>
+</div>
+
+<!-- Our Mission Section -->
+<div class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">🌟 Our Mission</h2>
+        <p class="text-center">
+            At <strong>TechBridge</strong> (replace with your brand), our mission is to bridge the gap between theoretical learning and practical application.
+            We offer curated content, engaging quizzes, and beginner-to-pro expert-level courses to accelerate your tech journey.
+        </p>
+    </div>
+</div>
+
+<!-- What We Offer Section -->
+<div class="section">
+    <div class="container">
+        <h2 class="section-title">📚 What We Offer</h2>
+        <div class="card-grid">
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/web-development-concept-illustration_114360-4299.jpg" alt="Web Development">
+                <div class="card-body">
+                    <h5>Web Development</h5>
+                    <p>Master frontend and backend skills using Django, React, HTML/CSS, and more through practical tutorials and quizzes.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/artificial-intelligence-concept-illustration_114360-4380.jpg" alt="AI/ML">
+                <div class="card-body">
+                    <h5>AI & Machine Learning</h5>
+                    <p>Understand algorithms and apply ML concepts through Python-based projects and assessments.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/data-science-illustration_23-2148487792.jpg" alt="Data Structures">
+                <div class="card-body">
+                    <h5>DSA & DBMS</h5>
+                    <p>Level up your problem-solving skills with rich DSA content, visualizations, and topic-wise quizzes.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/technical-support-illustration_1284-20367.jpg" alt="Quizzes">
+                <div class="card-body">
+                    <h5>Tech Quizzes</h5>
+                    <p>Test your skills across topics — timed quizzes, performance tracking, and leaderboards to stay competitive.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="https://img.freepik.com/free-vector/blog-post-concept-illustration_114360-4061.jpg" alt="Blogs">
+                <div class="card-body">
+                    <h5>Latest Tech Blogs</h5>
+                    <p>Stay updated with tech trends, developer tips, and in-depth tutorials from experienced authors.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Join Us Section -->
+<div class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">🚀 Join Our Journey</h2>
+        <p class="text-center">
+            Whether you're a student, developer, or tech enthusiast — there's something for everyone.
+            <br>Explore, Learn, Practice, and Grow with <strong>TechBridge</strong>.
+        </p>
+        <div class="text-center mt-4">
+            <a href="{% url 'register' %}" class="btn btn-success btn-lg">Join Now</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h3 class="text-center mb-3 bg-dark text-white p-2">Manage Quizzes</h3>
+
+{% comment %} <a href="{% url 'admin_add_category' %}" class="btn btn-info mb-3">Add Category</a> {% endcomment %}
+<!-- ✅ Add Category Form -->
+ <div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-success text-white text-center">Add New Category</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ category_form.as_p }}
+                    <button type="submit" name="category_submit" class="btn btn-success">Add Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+    <!-- ✅ Display Categories -->
+    <div class="card-header bg-info text-white mb-2 text-center">Available Categories</div>
+    <div class="row">
+        {% for category in categories %}
+            <div class="col-md-4 mb-2">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6>{{ category.name }}</h6>
+                        {% comment %} <p class="text-muted">{{ category.description|truncatewords:10 }}</p> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No categories yet.</p>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+<a href="{% url 'admin_add_quiz' %}" class="btn btn-primary mb-3">Add Quiz</a>
+<a href="{% url 'upload_quizzes_csv' %}" class="btn btn-secondary mb-3 ml-2">Upload CSV</a>
+<table class="table table-bordered">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>Title</th><th>Category</th><th>Status</th><th>Created</th><th>Free/Paid</th><th>Price</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+            <td>{{ quiz.title }}</td>
+            <td>{{ quiz.category }}</td>
+            <td>
+            {% comment %} <span class='badge badge-{{ "success" if quiz.status == "active" else "warning" if quiz.status == "hold" else "secondary" }}'>{{ quiz.get_status_display }}</span> {% endcomment %}
+            
+            {% if quiz.status == "active" %}
+                <span class="badge bg-success p-2 text-white">Active</span>
+            {% elif quiz.status == "hold" %}
+                <span class="badge bg-warning p-2 text-white">On Hold</span>
+            {% else %}
+                <span class="badge bg-secondary p-2 text-white">Disabled</span>
+            {% endif %}
+            </td>
+            <td>{{ quiz.created_at }}</td>
+            <td>
+                {% if quiz.is_paid %}
+                    PAID
+                {% else %}
+                    FREE
+                {% endif %}
+            </td>
+            <td>
+                {% if quiz.is_paid %}
+                    ₹ {{ quiz.price }}
+                {% else %}
+                    ₹ 0.00
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'admin_edit_quiz' quiz.id %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'admin_delete_quiz' quiz.id %}" class="btn btn-danger btn-sm">Delete</a>
+                <a href="{% url 'admin_add_question' quiz.id %}" class="btn btn-sm btn-success">+ Add MCQs</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
